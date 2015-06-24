@@ -1,11 +1,11 @@
 package ca.jonsimpson.jobrunner;
 
-import java.io.OutputStream;
 
 public class Job {
 	
-	String name;
-	Action action;
+	private String id;
+	private String name;
+	private Action action;
 	
 	
 	public Job(String name, Action action) {
@@ -14,8 +14,33 @@ public class Job {
 	}
 
 
-	public OutputStream getOutputStream() {
-		return action.getInputStream();
+	public String getId() {
+		return id;
+	}
+
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+
+	public String getName() {
+		return name;
+	}
+
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+
+	public Action getAction() {
+		return action;
+	}
+
+
+	public void setAction(Action action) {
+		this.action = action;
 	}
 	
 }
