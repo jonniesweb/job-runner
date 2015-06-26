@@ -22,4 +22,10 @@ public abstract class Action {
 		this.inputStream = inputStream;
 	}
 	
+	/**
+	 * Stuff that can be run by the {@link Action} when it has finished. Eg.
+	 * setting the return code.
+	 */
+	public abstract void postExecutionHook(JobResult jobResult);
+	
 }

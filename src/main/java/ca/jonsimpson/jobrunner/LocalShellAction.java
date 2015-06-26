@@ -19,6 +19,7 @@ public class LocalShellAction extends Action {
 			setProcess(Runtime.getRuntime().exec(command));
 			setInputStream(inputStream);
 			
+			System.out.println("LocalShellAction.execute() - returning the inputstream");
 			return getProcess().getInputStream();
 			
 			
@@ -36,22 +37,29 @@ public class LocalShellAction extends Action {
 		// execute test ls command
 		LocalShellAction action = new LocalShellAction("./src/main/resources/poll.sh");
 		
-		InputStream is = action.execute();
-		System.out.println("started execution");
+		Job job = new Job("123", action);
 		
-		try {
-			// output results
-//			OutputAllOnClose.outputFromInput(is, System.out);
-			BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-			
-			for (String s = reader.readLine(); s != null; s = reader.readLine()) {
-				System.out.println(s);
-			}
-			
-			System.out.println(action.getProcess().exitValue());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		JobExecutor executor = new DefaultJobExecutor();
+		
+		executor.executeJob(job);
+		
+		
+//		InputStream is = action.execute();
+//		System.out.println("started execution");
+//		
+//		try {
+//			// output results
+////			OutputAllOnClose.outputFromInput(is, System.out);
+//			BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+//			
+//			for (String s = reader.readLine(); s != null; s = reader.readLine()) {
+//				System.out.println(s);
+//			}
+//			
+//			System.out.println(action.getProcess().exitValue());
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 	}
 
 	public Process getProcess() {
@@ -68,6 +76,18 @@ public class LocalShellAction extends Action {
 
 	public void setCommand(String command) {
 		this.command = command;
+	}
+
+	/**
+	 * Set the return code on completion.
+	 */
+	@Override
+	public void postExecutionHook(JobResult jobResult) {
+		if (process.isAlive() == false) {
+			jobResult.setResultCode(getProcess().exitValue());
+		} else
+			throw new RuntimeException("Can't call postExecutionHook() when action is still running");
+		
 	}
 	
 	

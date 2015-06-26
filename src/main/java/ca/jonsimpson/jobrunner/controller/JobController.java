@@ -8,11 +8,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ca.jonsimpson.jobrunner.Job;
+import ca.jonsimpson.jobrunner.JobExecutor;
+import ca.jonsimpson.jobrunner.JobResult;
 import ca.jonsimpson.jobrunner.LocalShellAction;
 
 @RestController
@@ -20,6 +23,9 @@ import ca.jonsimpson.jobrunner.LocalShellAction;
 public class JobController {
 	
 	private Set<Job> jobs = new HashSet<Job>();
+	
+	@Autowired
+	private JobExecutor jobExecutor;
 	
 	public JobController() {
 		jobs.add(new Job("123", new LocalShellAction("ls")));
@@ -49,5 +55,19 @@ public class JobController {
 		}
 		
 		return results;
+	}
+	
+	@RequestMapping("/success")
+	public Collection<JobResult> getSuccessfulJobs() {
+		return getJobExecutor().getSuccessfulJobs();
+	}
+	
+	public JobExecutor getJobExecutor() {
+		System.out.println("getting job executor: " + jobExecutor);
+		return jobExecutor;
+	}
+	
+	public void setJobExecutor(JobExecutor jobExecutor) {
+		this.jobExecutor = jobExecutor;
 	}
 }
